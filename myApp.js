@@ -1,56 +1,25 @@
 require('dotenv').config();
-var mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-
-mongoose.connect(process.env.MONGO_URI, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
- },
- () => {
- console.log('DB connection Successful.....')
-});
-
 
 // name : string [required]
 // age :  number
 // favoriteFoods : array of strings (*)
-const schema = new Schema({
+const schema = new Schema ({
   name: {
-     type: String,
-     require: true,
+    type: String,
+    require: true,
   },
   age: Number,
   favoriteFoods: [String],
 });
 
-let Person = model('Person', schema);
-
+let Person;
 
 const createAndSavePerson = (done) => {
-  const person = new Person({ 
-    name: "John", 
-    age: 34,
-    favoriteFoods: [' Chicken Noodles'],
-  });
- 
-  person.save(function(err, data) {
-    done(null , data);
-  });
-  
+  done(null /*, data*/);
 };
 
-const arrayOfPeople = [
-  {name: 'Fiz', age: 34, favoriteFoods: ['Peanut Butter']},
-  {name: 'Bali', age: 24, favoriteFoods: ['Burger']},
-  {name: 'Sana', age: 14, favoriteFoods: ['Noodles']},
-];
-
-
 const createManyPeople = (arrayOfPeople, done) => {
-  Person.create(arrayOfPeople, (err, people) =>{
-    done(null, people);
-  });
-  
+  done(null /*, data*/);
 };
 
 const findPeopleByName = (personName, done) => {
@@ -75,14 +44,9 @@ const findPersonById = (personId, done) => {
 };
 
 const findEditThenSave = (personId, done) => {
- const foodToAdd = "hamburger";
- 
-  Person.findById(personId, (err, person ) => {
-    person.favoriteFoods.push(foodToAdd);
-    person.save((error, updatedPerson)=>{
-      done(null , updatedPerson);
-    });
-  });
+  const foodToAdd = "hamburger";
+
+  done(null /*, data*/);
 };
 
 const findAndUpdate = (personName, done) => {
