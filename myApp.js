@@ -1,5 +1,17 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+const{ Schema, model} = mongoose;
 
+mongoose.connect(
+  process.env.MONGO_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  () =>{
+    console.log('DB Connection Successful...')
+  }
+);
 // name : string [required]
 // age :  number
 // favoriteFoods : array of strings (*)
@@ -12,14 +24,28 @@ const schema = new Schema ({
   favoriteFoods: [String],
 });
 
-let Person;
+let Person = model('Person', schema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const person = new Person({
+    name: 'Jin',
+    age: 23,
+    favoriteFoods: ['Noodles'],
+  });
+  person.save(function(err , data){
+    done(null , data);
+  });
 };
 
+const arrayOfPeople = [
+  { name: 'Suzy', age: 53, favoriteFoods: ['Burger']},
+  { name: 'Jam', age: 32, favoriteFoods: ['Pizza']},
+  { name: 'Sam', age: 15, favoriteFoods: ['Mango']},
+];
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, (err, person) =>{
+    done(null, person);
+  });
 };
 
 const findPeopleByName = (personName, done) => {
@@ -33,20 +59,26 @@ const findOneByFood = (food, done) => {
   Person.findOne({ favoriteFoods: food }, (err, person) => {
     done(null, person);
   });
-  
+
 };
 
 const findPersonById = (personId, done) => {
   Person.findById(personId, (err, person ) => {
     done(null , person);
   });
-  
+
 };
 
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
 
-  done(null /*, data*/);
+  Person.findById(personId, (err, person) => {
+    person.favoriteFoods.push(foodToAdd);
+    person.save((error, updatedPerson) => {
+      done(null , updatedPerson);
+    });
+  });
+
 };
 
 const findAndUpdate = (personName, done) => {
@@ -60,13 +92,14 @@ const findAndUpdate = (personName, done) => {
       done(null , person);
     }
   );
-  
+
 };
 
 const removeById = (personId, done) =>{
   Person.findByIdAndRemove(personId, (err, person)=>{
     done(null, person);
   });
+
 };
 
 const removeManyPeople = (done) => {
@@ -75,6 +108,7 @@ const removeManyPeople = (done) => {
   Person.remove({ name: nameToRemove}, (err, person) =>{
     done(null, person);
   }); 
+  
 };
 
 const queryChain = (done) => {
